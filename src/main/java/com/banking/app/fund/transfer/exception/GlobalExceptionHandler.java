@@ -39,4 +39,21 @@ public class GlobalExceptionHandler {
         ErrorMessage errorMessage = new ErrorMessage("Account Customer Relation Error", HttpStatus.INTERNAL_SERVER_ERROR.value(), accountCustomerRelationException.getMessage());
         return new ResponseEntity<>(errorMessage,HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(InsufficientBalanceException.class)
+    public ResponseEntity<ErrorMessage> handleCustomerNotFoundException(final InsufficientBalanceException insufficientBalanceException){
+        ErrorMessage errorMessage = new ErrorMessage("LOW BALANCE", HttpStatus.CONFLICT.value(), insufficientBalanceException.getMessage());
+        return new ResponseEntity<>(errorMessage,HttpStatus.CONFLICT);
+    }
+    @ExceptionHandler(InvalidDebitAmount.class)
+    public ResponseEntity<ErrorMessage> handleCustomerNotFoundException(final InvalidDebitAmount invalidDebitAmount){
+        ErrorMessage errorMessage = new ErrorMessage("INVALID DEBIT AMT", HttpStatus.CONFLICT.value(), invalidDebitAmount.getMessage());
+        return new ResponseEntity<>(errorMessage,HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(InvalidBeneficiaryDetailsException.class)
+    public ResponseEntity<ErrorMessage> handleCustomerNotFoundException(final InvalidBeneficiaryDetailsException invalidBeneficiaryDetailsException){
+        ErrorMessage errorMessage = new ErrorMessage("INVALID BENEFICIARY", HttpStatus.CONFLICT.value(), invalidBeneficiaryDetailsException.getMessage());
+        return new ResponseEntity<>(errorMessage,HttpStatus.CONFLICT);
+    }
 }

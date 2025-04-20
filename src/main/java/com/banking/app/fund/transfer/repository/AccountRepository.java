@@ -21,4 +21,11 @@ public interface AccountRepository extends JpaRepository<SavingAccount,String> {
 
     @Query(value = "select balance from account where account_number = :accountNumber",nativeQuery = true)
     Optional<BigDecimal> findBalanceByAccountNumber(String accountNumber);
+
+    @Modifying
+    @Query(value = "update account set balance = balance - :amount where account_number=:accountNumber",nativeQuery = true)
+    int debit(String accountNumber,BigDecimal amount);
+
+    @Query(value = "select customer_id from account where account_number = :beneficiaryAccountNumber",nativeQuery = true)
+    Long findCustomerIdByAccountNumber(String beneficiaryAccountNumber);
 }

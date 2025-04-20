@@ -10,6 +10,7 @@ import com.banking.app.fund.transfer.exception.custom.AccountNotFoundException;
 import com.banking.app.fund.transfer.exception.custom.LoanAccountCreditException;
 import com.banking.app.fund.transfer.repository.AccountRepository;
 import com.banking.app.fund.transfer.repository.TransactionRepository;
+import com.banking.app.fund.transfer.utility.AccountUtility;
 import jakarta.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,41 +41,30 @@ public class CreditService {
     public Transaction creditAccount(final CreditRequest creditRequest){
        final String accountNumber =  creditRequest.getAccountNumber();
        final BigDecimal amount = creditRequest.getAmount();
-
        LOGGER.info("Getting account details for account number {}",accountNumber);
        Optional<SavingAccount> savingAccount =accountRepository.findById(accountNumber);
-
-       savingAccount.orElseThrow(()->{
-           LOGGER.error("Account number "+ accountNumber+ " not found");
-           throw new AccountNotFoundException("Account number "+ accountNumber+ " not found");
-       });
-       checkIfAccountBelongsToCustomer(creditRequest.getCustomerId(),accountNumber);
-       checkIfAccountIsActiveAndType(savingAccount.get());
+       LOGGER.info("Checking if Credit amount is valid and non-negative");
+       transactionService.checkIfTransactionAmountIsValid(amount);
+        LOGGER.info("Checking if Account Exists");
+        checkIfAccountNumberIsPresent(savingAccount, accountNumber);
+        LOGGER.info("Checking if Account belongs to Customer");
+        transactionService.checkIfAccountBelongsToCustomer(creditRequest.getCustomerId(),accountNumber);
+        LOGGER.info("Checking if Account is Active");
+        transactionService.checkIfAccountIsActiveAndType(savingAccount.get());
 
        int affectedRows = accountRepository.credit(accountNumber,amount);
        if(affectedRows==1){
-           Transaction transaction = transactionService.recordTransaction(creditRequest,amount,accountNumber);
+           Transaction transaction = transactionService.recordCreditTransaction(creditRequest,amount,accountNumber);
            LOGGER.info("Amount {} credited Successfully into account {} ",amount,accountNumber);
            return  transaction;
        }
        return null;
     }
 
-
-    private void checkIfAccountIsActiveAndType(SavingAccount savingAccount) {
-        String accountType = savingAccount.getAccountTypeCode();
-        if(!ACTIVE_STATUS_CODE.equals(savingAccount.getStatusCode())){
-            throw new AccountNotActiveException("Account number "+ savingAccount.getAccountNumber()+ " is not Active");
-        }
-        if(LOAN_ACCOUNT_CODE.equals(accountType)){
-            throw new LoanAccountCreditException("Cannot credit into loan account");
-        }
+    private void checkIfAccountNumberIsPresent(Optional<SavingAccount> savingAccount, String accountNumber) {
+        savingAccount.orElseThrow(()->{
+            LOGGER.error("Account number {} not found", accountNumber);
+            return new AccountNotFoundException("Account number " + accountNumber + " not found");
+        });
     }
-    public void checkIfAccountBelongsToCustomer(final Long customerId,final String accountNumber){
-        List<String> accountNumbers = accountRepository.findAllAccountsByCustomerId(customerId);
-        if(!accountNumbers.contains(accountNumber)){
-            throw new AccountCustomerRelationException("Given account number "+ accountNumber+ " does not belong to the provided customerId "+ customerId);
-        }
-    }
-
 }

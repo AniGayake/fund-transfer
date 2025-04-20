@@ -28,6 +28,10 @@ public class Transaction {
     private String purposeCode;
     private String sourceInstitutionCode;
     private Boolean isReversal;
+    private BigDecimal feeCharged;
+    private String beneficiaryAccountNumber;
+    private String beneficiaryAccountName;
+    private String beneficiaryIfscCode;
 
     public Long getId() {
         return id;
@@ -173,6 +177,38 @@ public class Transaction {
         isReversal = reversal;
     }
 
+    public BigDecimal getFeeCharged() {
+        return feeCharged;
+    }
+
+    public void setFeeCharged(BigDecimal feeCharged) {
+        this.feeCharged = feeCharged;
+    }
+
+    public String getBeneficiaryAccountNumber() {
+        return beneficiaryAccountNumber;
+    }
+
+    public void setBeneficiaryAccountNumber(String beneficiaryAccountNumber) {
+        this.beneficiaryAccountNumber = beneficiaryAccountNumber;
+    }
+
+    public String getBeneficiaryAccountName() {
+        return beneficiaryAccountName;
+    }
+
+    public void setBeneficiaryAccountName(String beneficiaryAccountName) {
+        this.beneficiaryAccountName = beneficiaryAccountName;
+    }
+
+    public String getBeneficiaryIfscCode() {
+        return beneficiaryIfscCode;
+    }
+
+    public void setBeneficiaryIfscCode(String beneficiaryIfscCode) {
+        this.beneficiaryIfscCode = beneficiaryIfscCode;
+    }
+
     @Override
     public String toString() {
         return "Transaction{" +
@@ -194,6 +230,10 @@ public class Transaction {
                 ", purposeCode='" + purposeCode + '\'' +
                 ", sourceInstitutionCode='" + sourceInstitutionCode + '\'' +
                 ", isReversal=" + isReversal +
+                ", feeCharged=" + feeCharged +
+                ", beneficiaryAccountNumber='" + beneficiaryAccountNumber + '\'' +
+                ", beneficiaryAccountName='" + beneficiaryAccountName + '\'' +
+                ", beneficiaryIfscCode='" + beneficiaryIfscCode + '\'' +
                 '}';
     }
 }
