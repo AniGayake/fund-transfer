@@ -4,7 +4,6 @@ import com.banking.app.fund.transfer.bo.SavingAccount;
 import com.banking.app.fund.transfer.bo.Transaction;
 import com.banking.app.fund.transfer.dto.request.DebitRequest;
 import com.banking.app.fund.transfer.exception.custom.InsufficientBalanceException;
-import com.banking.app.fund.transfer.exception.custom.InvalidDebitAmount;
 import com.banking.app.fund.transfer.repository.AccountRepository;
 import com.banking.app.fund.transfer.utility.AccountUtility;
 import org.slf4j.Logger;
